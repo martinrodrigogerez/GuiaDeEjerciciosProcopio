@@ -1,0 +1,133 @@
+classDiagram
+%% Interfaces de Observer
+    class Suscriptor {
+        <<interface>>
+        actualizar(Incidencia incidencia, String mensaje)
+    }
+
+    class Publicador {
+        <<interface>>
+        registrar(Suscriptor)
+        deregistrar(Suscriptor)
+        notificar(Incidencia, String mensaje)
+    }
+
+%% Sistema de seguimiento / notificaciones
+    class SistemaSeguimientoIncidencias {
+        -suscriptores: List~Suscriptor~
+        +actualizarIncidencia(Incidencia)
+        +registrar(Suscriptor)
+        +deregistrar(Suscriptor)
+        +notificar(Incidencia, String mensaje)
+    }
+    SistemaSeguimientoIncidencias ..|> Publicador
+
+%% Usuarios
+    class Trabajador {
+        -nombre: String
+        -esRepresentanteSindical: Boolean
+        +analizarRespuesta(AtencionIncidencia): Boolean
+        +crearAccion(Incidencia): Accion
+    }
+    class RepresentanteSindical {
+        <<extends>> Trabajador
+        +recibirAlertaUrgente(Incidencia)
+    }
+    Trabajador ..|> Suscriptor
+
+%% Incidencia y estado (State Pattern)
+    class Incidencia {
+        -id: Int
+        -descripcion: String
+        -fechaCreacion: LocalDateTime
+        -tipoViolencia: TipoViolencia
+        -estadoActual: EstadoIncidencia
+        -historicoRespuestas: List~RespuestaEmpresa~
+        +setEstado(EstadoIncidencia)
+        +procesarRespuesta(AtencionIncidencia)
+        +notificarCambio()
+    }
+
+    class RespuestaEmpresa {
+        -fecha: LocalDateTime
+        -detalle: String
+        -respuesta: String
+    }
+
+    class TipoViolencia {
+        <<Enumeration>>
+        Verbal
+        Psicológica
+        Física
+    }
+
+    class EstadoIncidencia {
+        <<interface>>
+        manejar(Incidencia incidencia, AtencionIncidencia respuesta)
+        obtenerAccion(Incidencia incidencia): Accion
+    }
+
+    class EstadoLeve {
+        +manejar(Incidencia, AtencionIncidencia)
+        +obtenerAccion(Incidencia): Accion
+    }
+    class EstadoGrave {
+        +manejar(Incidencia, AtencionIncidencia)
+        +obtenerAccion(Incidencia): Accion
+    }
+    class EstadoCritico {
+        +manejar(Incidencia, AtencionIncidencia)
+        +obtenerAccion(Incidencia): Accion
+    }
+
+    Incidencia --> EstadoIncidencia
+    Incidencia --> TipoViolencia
+    Incidencia --> RespuestaEmpresa
+
+    EstadoLeve --|> EstadoIncidencia
+    EstadoGrave --|> EstadoIncidencia
+    EstadoCritico --|> EstadoIncidencia
+
+%% Acciones y fábrica (Factory + Command style)
+    class Accion {
+        <<interface>>
+        ejecutar(LocalDateTime fechaHora, String ubicacion): void
+    }
+
+    class ConvocarReunion {
+        -descripcion: String
+        +ejecutar(LocalDateTime, String)
+    }
+    class MovilizarRecursos {
+        -descripcion: String
+        +ejecutar(LocalDateTime, String)
+    }
+    class AlertaUrgente {
+        -descripcion: String
+        +ejecutar(LocalDateTime, String)
+    }
+
+    ConvocarReunion ..|> Accion
+    MovilizarRecursos ..|> Accion
+    AlertaUrgente ..|> Accion
+
+    class AccionFactory {
+        +crearAccion(String tipo, Incidencia inc, Map~String,Object~ contexto): Accion
+    }
+    AccionFactory --> Accion
+
+%% Atención de la empresa
+    class AtencionIncidencia {
+        <<interface>>
+        atender(Incidencia incidencia, String respuesta, LocalDateTime fecha)
+    }
+    class Empresa {
+        -cuit: String
+        -descripcion: String
+        +atender(Incidencia incidencia, String respuesta, LocalDateTime fecha)
+    }
+    Empresa --|> AtencionIncidencia
+
+%% Relaciones de notificación
+    SistemaSeguimientoIncidencias --> Suscriptor : notifica
+    Trabajador --> SistemaSeguimientoIncidencias : se suscribe / recibe actualizaciones

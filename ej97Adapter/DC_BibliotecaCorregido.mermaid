@@ -1,0 +1,58 @@
+classDiagram
+    class Cliente {
+        +usar(ControlReproduccion c)
+    }
+
+    class ControlReproduccion {
+        <<interface>>
+        +play()
+        +pause()
+        +stop()
+    }
+
+    class ReproductorClasico {
+        +cargarArchivo(String rutaArchivo)
+        +reproducir()
+        +pausar()
+        +detener()
+    }
+
+    class FlujoAudio {
+        <<interface>>
+        +inicializar(byte[] flujo, String tipoMime)
+        +start()
+        +suspend()
+        +close()
+    }
+
+    class ReproductorModernizado {
+        +inicializar(byte[] flujo, String tipoMime)
+        +start()
+        +suspend()
+        +close()
+    }
+
+    class AdaptadorClasico {
+        -reproductor: ReproductorClasico
+        +AdaptadorClasico(String rutaArchivo)
+        +play()
+        +pause()
+        +stop()
+    }
+
+    class AdaptadorModernizado {
+        -reproductor: FlujoAudio
+        -datos: byte[]
+        -tipoMime: String
+        +AdaptadorModernizado(byte[] datos, String tipoMime)
+        +play()
+        +pause()
+        +stop()
+    }
+
+    Cliente --> ControlReproduccion : usa
+    AdaptadorClasico ..|> ControlReproduccion
+    AdaptadorModernizado ..|> ControlReproduccion
+    AdaptadorClasico --> ReproductorClasico
+    AdaptadorModernizado --> FlujoAudio
+    ReproductorModernizado ..|> FlujoAudio

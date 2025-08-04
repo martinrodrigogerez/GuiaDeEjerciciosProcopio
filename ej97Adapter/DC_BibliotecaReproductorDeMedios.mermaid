@@ -1,0 +1,92 @@
+%%Contexto
+%%Estás desarrollando una pequeña aplicación que maneja reproducción de archivos de audio.
+%%En el sistema conviven dos subsistemas que fueron desarrollados en momentos distintos
+%%y no fueron diseñados para trabajar juntos “de fábrica”,
+%%pero la aplicación final debe poder usar ambos bajo un mismo flujo de trabajo.
+
+classDiagram
+
+    class Cliente{
+        +usar(ControlReproduccion control)
+    }
+
+    class ControlReproduccion{
+        <<interface>>
+        play() void
+        pause() void
+        stop() void
+    }
+
+    class ReproductorClasico{
+        cargarArchivo(String rutaArchivo)
+        reproducir() void
+        pausar() void
+        detener() void
+    }
+
+    class iFlujoAudio{
+        <<interface>>
+
+        inicializar(flujo,String tipoMime)
+
+        start() void
+        suspend() void
+        close() void
+
+    }
+
+    class ReproductorModernizado{
+
+        inicializar(flujo,String tipoMime)
+
+        start() void
+        suspend() void
+        close() void
+
+    }
+    class AdapterRC {
+
+        -reproductor:ReproductorClasico
+        -flujo: byte[]
+        -tipoMime: String
+
+        AdapterRC(byte[] flujo,String tipoMime)
+        play() void
+        pause() void
+        stop() void
+    }
+
+    class AdapterRM {
+
+        reproductor:ReproductorModernizado
+        AdapterRM(String cancion)
+
+        play() void
+        pause() void
+        stop() void
+    }
+
+
+
+%%  Implementa interfaz
+    ReproductorModernizado ..|> iFlujoAudio
+    Cliente --> ControlReproduccion :usa
+    AdapterRC ..|>ControlReproduccion
+    AdapterRC --> ReproductorClasico
+    AdapterRM --> iFlujoAudio
+    AdapterRM ..|>ControlReproduccion
+
+
+
+note for AdapterRC "Uso:\nControlReproduccion a = new AdapterRC(''cancion.mp3'');\na.play();\na.pause();\na.stop();"
+
+note for AdapterRM "Uso:\nbyte[] datos = leerArchivoComoBytes(''tema.mp3'');\nControlReproduccion a = new AdapterRM(datos, ''audio/mpeg'');\na.play();\na.pause();\na.stop();"
+
+note "Comentario sobre la solución
+Separación de adaptadores: en vez de un único Adapter  que intenta \n manejar ambos internos (ReproductorClasico y ReproductorModernizado), hay dos adaptadores concretos. \n Cada uno adapta su respectivo subsistema a la interfaz común ControlReproduccion.\n Esto sigue la responsabilidad única y evita lógica condicional innecesaria.
+
+Interfaz común explícita:\n ControlReproduccion define play(), pause(), stop(), \n que es lo que consume el cliente.\n Los adaptadores implementan esa interfaz.
+
+ReproductorModernizado implementa FlujoAudio;\n el adaptador usa la interfaz FlujoAudio \n en lugar de acoplarse directamente a una implementación concreta, \n permitiendo substitución si hubiera otras implementaciones futuras.
+
+Inicialización distinta: el adaptador clásico encapsula la carga por ruta y la reproducción;\n el moderno recibe el flujo de bytes y MIME y lo inicializa antes de llamar a start()."

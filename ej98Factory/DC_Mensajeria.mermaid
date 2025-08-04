@@ -1,0 +1,70 @@
+---
+title: Mensajeria
+---
+
+%%Escenario
+%%Una pequeña aplicación de mensajería necesita enviar notificaciones a los usuarios.
+%%Actualmente, se soportan tres tipos de notificaciones:
+
+%%Email: se envía a través de un servicio SMTP.
+%%SMS: se envía mediante un servicio de mensajería móvil.
+%%Push: se envía a través de una API de notificaciones push.
+
+%%La aplicación recibe desde un archivo de configuración el tipo de notificación que debe enviarse y el mensaje.
+%%El sistema debe instanciar el objeto adecuado según el tipo especificado y luego enviarlo.
+%%
+%%Requisitos
+%%Debe ser posible agregar en el futuro nuevos tipos de notificaciones
+%%sin modificar el código existente que procesa el envío.
+%%Cada tipo de notificación debe implementar un metodo enviar()
+%%que muestre un mensaje en consola simulando el envío real.
+%%La lógica que decide qué clase concreta usar no debe estar dispersa en el código.
+
+classDiagram
+    class CreadorNotificacion {
+        <<Abstract>>
+        crearNotificacion()* iNotificacion
+
+    }
+
+%% Interfaz
+    class iNotificacion{
+        <<interface>>
+        enviar(mensaje)
+    }
+
+%% Clases creadores concretas
+    class EmailCreator{
+        crearNotificacion() iNotificacion
+    }
+
+    class SMSCreator{
+        crearNotificacion() iNotificacion
+    }
+    class PushCreator{
+        crearNotificacion() iNotificacion
+    }
+
+ CreadorNotificacion <|-- EmailCreator
+ CreadorNotificacion <|-- SMSCreator
+ CreadorNotificacion <|-- PushCreator
+ CreadorNotificacion  ..> iNotificacion
+ iNotificacion  <|.. Email
+ iNotificacion  <|.. SMS
+ iNotificacion  <|.. Push
+
+
+%% Clases concretas
+    class Email{
+        enviar(mensaje) void
+    }
+    class SMS{
+        enviar(mensaje) void
+    }
+    class Push{
+        enviar(mensaje) void
+    }
+
+%%
+
+

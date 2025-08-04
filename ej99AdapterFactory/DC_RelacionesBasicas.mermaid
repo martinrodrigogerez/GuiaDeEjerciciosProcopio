@@ -1,0 +1,48 @@
+---
+title: Relaciones y Cardinalidades
+---
+
+classDiagram
+    Animal <|-- Duck
+    note for Duck "can fly\ncan swim\ncan dive\ncan help in debugging"
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+
+%%Tipo relaciones
+classA --|> classB : Inheritance
+classC --* classD : Composition
+classE --o classF : Aggregation
+classG --> classH : Association
+classI -- classJ : Link(Solid)
+classK ..> classL : Dependency
+classM ..|> classN : Realization
+classO .. classP : Link(Dashed)
+%%Cardinalidad
+Customer "1" --> "*" Ticket
+Student "1" --> "1..*" Course
+Galaxy --> "many" Star : Contains
+
+namespace BaseShapes {
+    class Triangle
+    class Rectangle {
+    double width
+    double height
+    }
+}

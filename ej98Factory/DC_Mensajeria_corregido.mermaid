@@ -1,0 +1,54 @@
+classDiagram
+%% Producto (abstracción)
+    class Notificacion {
+        <<interface>>
+        enviar(mensaje)
+    }
+
+%% Productos concretos
+    class Email {
+        enviar(mensaje) void
+    }
+    class SMS {
+        enviar(mensaje) void
+    }
+    class Push {
+        enviar(mensaje) void
+    }
+
+%% Creador abstracto
+    class CreadorNotificacion {
+        <<Abstract>>
+        crearNotificacion() Notificacion
+        enviarMensaje(mensaje)  // método plantilla que usa crearNotificacion()
+    }
+
+%% Creadores concretos
+    class EmailCreator {
+        crearNotificacion() Notificacion
+    }
+    class SMSCreator {
+        crearNotificacion() Notificacion
+    }
+    class PushCreator {
+        crearNotificacion() Notificacion
+    }
+
+%% Cliente (opcional para contexto)
+    class Cliente {
+        procesar(tipo, mensaje)
+    }
+
+%% Relaciones
+    Notificacion <|.. Email
+    Notificacion <|.. SMS
+    Notificacion <|.. Push
+
+    CreadorNotificacion <|-- EmailCreator
+    CreadorNotificacion <|-- SMSCreator
+    CreadorNotificacion <|-- PushCreator
+
+    CreadorNotificacion --> Notificacion : crea
+
+    Cliente ..> CreadorNotificacion : usa
+    Cliente ..> Notificacion : usa

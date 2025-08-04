@@ -1,0 +1,88 @@
+---
+title: Sistema de impresión de documentos en una aplicación
+---
+%%
+%%Una aplicación tiene que imprimir diferentes tipos de documentos (PDF, Word y Texto plano). Cada tipo de documento sabe cómo formatearse e imprimirse, pero la aplicación no debe acoplarse a clases concretas: por eso se usa un Factory que, dado un tipo, produce el objeto Documento apropiado.
+%%
+%%Además, existe una impresora externa con interfaz incompatible (por ejemplo, tiene su propio conjunto de métodos como externalPrint(String contenido)), que no se puede cambiar. Para integrarla sin modificarla directamente se crea un Adapter que la expone con la interfaz común de impresión que usa el resto de la aplicación.
+%%
+%%El Cliente pide imprimir un documento; la aplicación obtiene el Documento mediante la fábrica y lo envía a una impresora estándar o, si es necesario usar la impresora externa, lo hace a través del adaptador que la envuelve.
+%%
+
+classDiagram
+    class Cliente{
+        usuario:String
+        direccionIp:String
+        +imprimir(Documento doc, ImpresoraExt disp)
+    }
+
+    class DocumentoFactory{
+        <<Abstract>>
+        createDocumento(String tipo)* Documento
+    }
+
+    class Documento{
+        <<interface>>
+        print(DateTime fecha, integer mbs, String docName )
+    }
+
+    class PDFCreator {
+        createDocumento(String tipo) Documento
+    }
+
+    class WordCreator {
+        createDocumento(String tipo) Documento
+    }
+    class TxtPlanoCreator {
+        createDocumento(String tipo) Documento
+    }
+
+    class PDF{
+        -tipo:String
+    print(DateTime fecha, integer mbs, String docName )
+    }
+
+    class Word{
+        -tipo:String
+    print(DateTime fecha, integer mbs, String docName )
+    }
+    class TxtPlano{
+        -tipo:String
+    print(DateTime fecha, integer mbs, String docName )
+    }
+
+    class Impresora{
+        imprimir(Documento,Cliente user)
+        cancelarImpresion(Documento,Cliente user)
+        apagarImpresora()
+        activarImpresora()
+    }
+
+    class ImpresoraExt{
+        <<interface>>
+        imprimir(Documento,Cliente user)
+        cancelarImpresion(Documento,Cliente user)
+        apagarImpresora()
+        activarImpresora()
+    }
+
+    class AdapterImpresora{
+        imprimirDoc: ImpresoraExt
+
+        AdapterImpresora(Cliente c, Documento)
+        printDoc()
+
+
+    }
+
+    DocumentoFactory <|-- PDFCreator
+    DocumentoFactory <|-- WordCreator
+    DocumentoFactory <|-- TxtPlanoCreator
+    DocumentoFactory ..> Documento :usa
+    Word ..|>Documento
+    PDF ..|> Documento
+    TxtPlano ..|>Documento
+    Impresora ..|> ImpresoraExt
+    Cliente --> Impresora :usa
+    AdapterImpresora ..|> ImpresoraExt
+    AdapterImpresora --> Documento

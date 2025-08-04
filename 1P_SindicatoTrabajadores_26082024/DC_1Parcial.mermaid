@@ -1,0 +1,137 @@
+classDiagram
+    class SistemaSeguimientoIncidencias{
+    -trabajador:List ~TrabajadorSuscripcion~
+
+    addSuscriptor(TrabajadorSuscripcion)
+    removeSuscriptor(TrabajadorSuscripcion)
+    notificarSuscriptor()
+
+    }
+
+    SistemaSeguimientoIncidencias ..|>PublicadorIncidencias
+
+
+    class PublicadorIncidencias{
+        <<interface>>
+        addSuscriptor(TrabajadorSuscripcion)
+        removeSuscriptor(TrabajadorSuscripcion)
+        notificarSuscriptor()
+    }
+    class Trabajador{
+        esRepresentanteSindical: bool
+        Trabajador(String nombre)
+        setEsRepresentanteSindical(Boolean valor)
+        suscribir(Incidencia)
+%%      genera la denuncia
+        notificar(Incidencia)
+
+        analizarMedida(AtencionIncidencia respuesta): Boolean
+        crearMovimiento(Incidencia):Accion
+    }
+
+    class AccionFactory{
+        crearMedidaDeAccion(String tipo,Int cantidadPersonas, Incidencia inc,String Calle) *Accion
+    }
+
+    class ConvocarAReunion{
+        -descripcion: String
+        ConvocarAReunion(String descripcion)
+
+    }
+
+    class MovilizarRecursos{
+        -descripcion: String
+        MovilizarRecursos(String descripcion)
+    }
+
+    class Urgencia{
+        -descripcion: String
+        Urgencia(String descripcion)
+    }
+
+    class Accion{
+        <<interface>>
+        ejecutar(String LocalDateTime,String calle)::String
+    }
+
+    ConvocarAReunion ..|>Accion
+    Urgencia ..|>Accion
+    MovilizarRecursos ..|>Accion
+    AccionFactory -->Accion : crea
+    AccionFactory ..>Incidencia:conoce
+
+
+
+    class TrabajadorSuscripcion{
+        <<interface>>
+        suscribir(Incidencia)
+    }
+
+    Trabajador ..|>TrabajadorSuscripcion
+    SistemaSeguimientoIncidencias --> TrabajadorSuscripcion :notifica
+
+    class Incidencia{
+        -id:Int
+        -descripcion: String
+        -fechaCreacion: LocalDateTime
+        -estado:EstadoIncidencia
+        -tipoViolencia: TipoViolencia
+        -historicoDeRespuestas: <List<LocalDateTime fecha, String respuesta>
+
+        setEstado(estado: EstadoIncidencia)
+    }
+
+    class TipoViolencia{
+        <<Enumeration>>
+        Verbal
+        Psico
+        Fisica
+    }
+
+    Incidencia --> TipoViolencia
+
+    class EstadoIncidencia{
+        <<interface>>
+        %%En función de la respeuesta de la empresa se toma una decision
+        %%con el metodo  analizarMedida(AtencionIncidencia respuesta): Boolean
+        %% crearMovimiento(Incidencia):Accion
+        %%y se cambia de estado y se actualiza la suscripcion del interesado
+        cambiarDeEstado()
+    }
+
+    class IncidenteNivelUno{
+        convocarAMesaDeReunion()
+        cambiarDeEstado()
+
+    }
+
+    class IncidenteNivelDos{
+        convocarAUrgencia()
+        cambiarDeEstado()
+
+    }
+
+    class IncidenteNivelTres{
+        convocarMovilizarRecursos()
+        cambiarDeEstado()
+
+    }
+
+    IncidenteNivelUno --|> EstadoIncidencia
+    IncidenteNivelDos  --|> EstadoIncidencia
+    IncidenteNivelTres --|> EstadoIncidencia
+    Incidencia --> EstadoIncidencia
+
+    class Empresa{
+        descripcion: String
+        cuit: String
+        atender(Incidencia incidente, String respuesta,LocalDateTime fecha)
+    }
+
+    class AtencionIncidencia{
+        <<interface>>
+        atender(Incidencia incidente, String respuesta,LocalDateTime fecha)
+    }
+
+    Empresa --|> AtencionIncidencia
+

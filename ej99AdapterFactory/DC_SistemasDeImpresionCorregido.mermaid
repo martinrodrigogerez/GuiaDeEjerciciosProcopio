@@ -1,0 +1,82 @@
+%%Una aplicación tiene que imprimir diferentes tipos de documentos (PDF, Word y Texto plano). Cada tipo de documento sabe cómo formatearse e imprimirse, pero la aplicación no debe acoplarse a clases concretas: por eso se usa un Factory que, dado un tipo, produce el objeto Documento apropiado.
+%%
+%%Además, existe una impresora externa con interfaz incompatible (por ejemplo, tiene su propio conjunto de métodos como externalPrint(String contenido)), que no se puede cambiar. Para integrarla sin modificarla directamente se crea un Adapter que la expone con la interfaz común de impresión que usa el resto de la aplicación.
+%%
+%%El Cliente pide imprimir un documento; la aplicación obtiene el Documento mediante la fábrica y lo envía a una impresora estándar o, si es necesario usar la impresora externa, lo hace a través del adaptador que la envuelve.
+%%
+
+
+classDiagram
+    class Cliente {
+        usuario: String
+        direccionIp: String
+        +imprimir(String tipoDocumento, String nombreDocumento, Impresora impresora, DocumentoFactory factory): void
+    }
+
+    class Documento {
+        <<interface>>
+        +render(): String
+    }
+
+    class PDF {
+        -nombre: String
+        +PDF(String nombre)
+        +render(): String
+    }
+
+    class Word {
+        -nombre: String
+        +Word(String nombre)
+        +render(): String
+    }
+
+    class TxtPlano {
+        -nombre: String
+        +TxtPlano(String nombre)
+        +render(): String
+    }
+
+    class DocumentoFactory {
+        +createDocumento(String tipo, String nombre): Documento
+    }
+
+    class Impresora {
+        <<interface>>
+        +imprimir(Documento doc, Cliente user): void
+        +cancelarImpresion(Documento doc, Cliente user): void
+        +apagarImpresora(): void
+        +activarImpresora(): void
+    }
+
+    class ImpresoraLocal {
+        +imprimir(Documento doc, Cliente user): void
+        +cancelarImpresion(Documento doc, Cliente user): void
+        +apagarImpresora(): void
+        +activarImpresora(): void
+    }
+
+    class ImpresoraExterna {
+        +externalPrint(String contenido): void
+        +externalCancel(): void
+        +shutdown(): void
+        +start(): void
+    }
+
+    class AdapterImpresoraExterna {
+        -externa: ImpresoraExterna
+        +AdapterImpresoraExterna(ImpresoraExterna externa)
+        +imprimir(Documento doc, Cliente user): void
+        +cancelarImpresion(Documento doc, Cliente user): void
+        +apagarImpresora(): void
+        +activarImpresora(): void
+    }
+
+    Cliente --> DocumentoFactory : usa
+    Cliente --> Impresora : usa
+    DocumentoFactory --> Documento : crea
+    PDF ..|> Documento
+    Word ..|> Documento
+    TxtPlano ..|> Documento
+    ImpresoraLocal ..|> Impresora
+    AdapterImpresoraExterna ..|> Impresora
+    AdapterImpresoraExterna --> ImpresoraExterna : adapta
