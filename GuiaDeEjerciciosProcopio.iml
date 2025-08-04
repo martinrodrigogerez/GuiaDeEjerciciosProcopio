@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/1P_SindicatoTrabajadores_26082024/App" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej2-Strategy" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej2-Strategy/Ejer2" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej7-Obs-Strategy" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej7-Obs-Strategy/ejer7" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej13-Facade" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
