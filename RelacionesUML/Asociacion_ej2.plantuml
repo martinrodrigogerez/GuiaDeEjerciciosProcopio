@@ -1,0 +1,30 @@
+@startuml
+
+class Estudiante {
+  -nombre: String
+  -universidad: Universidad
+  +inscribirse()
+  +cambiarUniversidad(uni: Universidad)
+}
+
+class Universidad {
+  -nombre: String
+  -ubicacion: String
+  +obtenerCarreras(): List<Carrera>
+}
+
+Estudiante "*" --> "1" Universidad : estudia en
+
+note right of Universidad
+  La universidad no necesita
+  conocer a todos sus estudiantes
+  para funcionar correctamente.
+end note
+
+note left of Estudiante
+  El estudiante conoce y mantiene
+  referencia a su universidad.
+  Puede cambiar de universidad.
+end note
+
+@enduml

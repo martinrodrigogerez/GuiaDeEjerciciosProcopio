@@ -1,0 +1,40 @@
+@startuml
+
+class ServicioEmail {
+  +enviarNotificacion(mensaje: String, destinatario: String)
+  +enviarFactura(datos: String)
+}
+
+class Email {
+  -asunto: String
+  -cuerpo: String
+  -destinatario: String
+  +enviar(): boolean
+}
+
+class Logger {
+  +log(mensaje: String): void
+}
+
+ServicioEmail ..> Email : <<create>>
+ServicioEmail ..> Logger : <<use>>
+
+note right of Email
+  Se crea temporalmente dentro
+  del método enviarNotificacion()
+  y se destruye al finalizar.
+end note
+
+note bottom of Logger
+  Se utiliza para registrar eventos
+  mediante métodos estáticos.
+  No se almacena instancia.
+end note
+
+note left of ServicioEmail
+  Crea instancias temporales de Email
+  y usa Logger para registro.
+  Relaciones de dependencia pura.
+end note
+
+@enduml

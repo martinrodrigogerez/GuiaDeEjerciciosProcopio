@@ -1,0 +1,31 @@
+@startuml
+
+class CalculadoraImpuestos {
+  +calcularIVA(producto: Producto): double
+  +calcularGanancias(producto: Producto): double
+  +aplicarDescuento(producto: Producto, descuento: double): double
+}
+
+class Producto {
+  -nombre: String
+  -precio: double
+  +getPrecio(): double
+  +setPrecio(precio: double)
+}
+
+CalculadoraImpuestos ..> Producto : <<use>>
+
+note right of Producto
+  El producto es usado como
+  parámetro en los métodos de
+  la calculadora, pero no se
+  almacena como atributo.
+end note
+
+note left of CalculadoraImpuestos
+  Usa temporalmente el producto
+  para realizar cálculos.
+  No mantiene referencia permanente.
+end note
+
+@enduml

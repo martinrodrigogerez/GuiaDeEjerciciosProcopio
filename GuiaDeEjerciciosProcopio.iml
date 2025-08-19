@@ -3,12 +3,18 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/1P_SindicatoTrabajadores_26082024/App" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/2025_SistemaDeVentasBicicletas/main" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/Ej2-Strategy" />
       <excludeFolder url="file://$MODULE_DIR$/Ej2-Strategy/Ejer2" />
       <excludeFolder url="file://$MODULE_DIR$/Ej7-Obs-Strategy" />
       <excludeFolder url="file://$MODULE_DIR$/Ej7-Obs-Strategy/ejer7" />
       <excludeFolder url="file://$MODULE_DIR$/Ej13-Facade" />
+      <excludeFolder url="file://$MODULE_DIR$/ej102Observer" />
+      <excludeFolder url="file://$MODULE_DIR$/Ej104Observer_gimnasio/main" />
+      <excludeFolder url="file://$MODULE_DIR$/1P_SindicatoTrabajadores_26082024" />
+      <excludeFolder url="file://$MODULE_DIR$/2025_Simulacro_RedSolidaria" />
+      <excludeFolder url="file://$MODULE_DIR$/2025_Simulacro_Mediastream" />
+      <excludeFolder url="file://$MODULE_DIR$/2025_Simulacro_Mediastream/main" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

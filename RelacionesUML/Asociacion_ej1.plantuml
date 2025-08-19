@@ -1,0 +1,32 @@
+@startuml
+
+class Cliente {
+  -nombre: String
+  -cuentas: List<Cuenta>
+  +agregarCuenta(cuenta: Cuenta)
+  +obtenerSaldo(): double
+}
+
+class Banco {
+  -nombre: String
+  -clientes: List<Cliente>
+  +registrarCliente(cliente: Cliente)
+  +obtenerClientes(): List<Cliente>
+}
+
+Cliente "*" --> "1..*" Banco : tiene cuentas
+Banco "1..*" --> "*" Cliente : atiende a
+
+note right of Cliente
+  El cliente mantiene una lista
+  de bancos donde tiene cuentas.
+  Puede existir sin el banco.
+end note
+
+note left of Banco
+  El banco registra sus clientes
+  pero no controla su existencia.
+  Relación bidireccional.
+end note
+
+@enduml

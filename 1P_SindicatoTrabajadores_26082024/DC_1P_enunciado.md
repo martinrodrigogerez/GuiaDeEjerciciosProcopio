@@ -35,6 +35,164 @@ El sistema debe ser flexible y permitir la implementación de diferentes método
 
 ---
 
+```mermaid
+
+classDiagram
+    
+
+    class Trabajador{
+        -nombre: String 
+        -denuncias:List~Incidente~
+        Trabajador(String nombre)
+        
+        +denunciar(Incidente nuevoIncidente)
+     }
+ 
+
+    class Incidente{
+        -fechayHoraIncidente:LocalDateTime
+        -tipoDeViolencia:TipoDeViolencia
+        -estado:Estado
+        -respuestaDeLaEmpresa: List ~String~
+        -listaSuscriptores: List ~Suscriptor~
+        %% por defecto el estado es 
+        Incidente(String descripcion, TipoDeViolencia tipo, Estado estado)
+        cambiar(Estado estado)
+    }
+    %%  Estado o Progreso
+    
+    class Sindical{
+        -accion:AccionStrategy
+        -nombre:String
+        Sindical(String nombre)
+        analizarRespuesta(Incidente i) Medida
+        setMedidaDeFuerza(Medida m)
+        cambiarEstadoIncidente(Incidente incidente)
+        ejecutar(Medida m)
+
+    }
+    
+    class EnProgreso{
+        cambiar(Estado estado)
+
+    }
+    
+    class SinRespuesta{
+        cambiar(Estado estado)
+
+    }
+    
+    class ConRespuesta{
+        cambiar(Estado estado)
+
+    }
+    
+    class Resuelto{
+        cambiar(Estado estado)
+
+    }
+    
+    class Estado{
+        <<interface>>
+        cambiar(Estado estado)
+    }
+    
+    class Suscriptor{
+        recibirNotificacion(Incidente incidente)
+    }
+    
+    
+    
+    
+    Sindical --> Incidente: analizar
+    Sindical --|> Suscriptor:recibir notificacion
+    Incidente ..|> Publicador:comunica eventos
+    Incidente --> Estado: control de estado
+    Estado <|..ConRespuesta:ejecutar
+    Estado <|..EnProgreso: progreso
+    Estado <|..SinRespuesta: no respondido
+    Estado <|..Resuelto: resuelto
+    Incidente <--o Trabajador
+    AccionStrategy <|.. Sindical 
+    ReunionDeMediacion ..|>AccionStrategy
+    NegociarConLaEmpresa ..|>AccionStrategy
+    Protesta ..|>AccionStrategy
+    Incidente --> TipoDeViolencia
+    Medida --> Gravedad
+    Empresa ..> Incidente:responder
+    Medida <|-- ReunionDeMediacion
+    Medida <|-- NegociarConLaEmpresa
+    Medida <|-- Protesta
+
+    class AccionStrategy{
+        <<interface>>
+        ejecutar(Medida)
+    }
+    
+    class TipoDeViolencia{
+        <<enumeration>>
+        VERBAL
+        FISICA
+        PSICOLOGICA
+    }
+    
+    class Empresa{
+        -descripcion: String
+        Empresa(String descripcion)
+        responderIncidente(Incidente incidente)
+    }
+
+
+    class Notificacion{
+        tipo:TipoNotificacion
+    }
+    
+    class TipoNotificacion{
+        <<enumeration>>
+        SEGUIMIENTO
+        ALERTA
+    }
+    
+    class Medida{
+        <<abstract>>
+        -fechaInicio:LocalDate
+        -descripcion:String
+        -gravedad:Gravedad
+        +setGravedad(Gravedad gravedadIncidente)
+    }
+    
+    class Publicador{
+        suscribir(Suscriptor suscriptor)
+        desuscribir(Suscriptor suscriptor)
+        notificar()
+    }
+    
+    class Gravedad{
+        <<enumeration>>
+        LEVE
+        MEDIA
+        GRAVE
+    }
+    
+    class ReunionDeMediacion{
+        ejecutar(Medida medidaDeFuerza)
+
+    }
+    
+    class NegociarConLaEmpresa{
+        ejecutar(Medida medidaDeFuerza)
+
+    }
+    
+    class Protesta{
+        ejecutar(Medida medidaDeFuerza)
+
+    }
+
+    
+    
+```
+
 ## Ejercicio 2
 
 Mencione tres atributos de calidad que considere los más importantes, basándose en la norma ISO/IEC 25010 (que reemplaza a la norma ISO/IEC 9126). Justifique su elección en el contexto del sistema planteado en el Ejercicio 1. Justifique la elección de cada atributo.
